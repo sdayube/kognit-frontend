@@ -19,7 +19,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.14.1"
+    "react-router-dom": "^6.14.1",
+    "scheduler": "^0.23.0",
+    "use-context-selector": "^1.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",
@@ -27,6 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
+    "axios-mock-adapter": "^1.21.5",
     "eslint": "^8.44.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1",

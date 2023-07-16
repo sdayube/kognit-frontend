@@ -1,5 +1,6 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { QueryClient } from 'react-query';
+import MockAdapter from 'axios-mock-adapter';
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
@@ -12,26 +13,19 @@ const api = axios.create({
   baseURL: BASE_URL,
 });
 
-api.interceptors.response.use((response) => {
-  const token = sessionStorage.getItem('@KOGNIT:token');
-
-  if (token) {
-    response.headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  return response;
+const mock = new MockAdapter(api, {
+  delayResponse: 200,
+  onNoMatch: 'passthrough',
 });
 
-api.interceptors.request.use(
-  (response) => response,
-  (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      sessionStorage.removeItem('@KOGNIT:token');
-      window.location.href = '/login';
-    }
+mock.onGet('/login').reply((config) => {
+  const { username } = JSON.parse(config.data as string) as {
+    username: string;
+  };
 
-    return Promise.reject(error);
-  },
-);
+  const access_token: string = Math.random().toString(36).substring(7);
+
+  return [200, { access_token, user: { username } }];
+});
 
 export default api;

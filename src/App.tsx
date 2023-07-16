@@ -5,12 +5,15 @@ import '@fontsource/roboto/700.css';
 import { CssBaseline } from '@mui/material';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './services/api';
+import AuthProvider from './stores/AuthContext';
 
 function App() {
   return (
     <>
       <CssBaseline />
-      <QueryClientProvider client={queryClient}></QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider></AuthProvider>
+      </QueryClientProvider>
     </>
   );
 }
