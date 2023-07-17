@@ -1,31 +1,36 @@
+import { AxiosError } from 'axios';
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { createContext } from 'use-context-selector';
 import api from '../services/api';
-import { AxiosError } from 'axios';
+import { useLogin } from '../services/login';
 
 export type User = {
-  username: string;
+  email: string;
 };
 
-type SignInCredentials = {
-  username: string;
+export type LoginCredentials = {
+  email: string;
   password: string;
 };
 
 export interface AuthContextData {
   user: User | null;
-  signIn(credentials: SignInCredentials): Promise<User | null>;
+  signIn(credentials: LoginCredentials): Promise<User | null>;
   signOut(): void;
+  isLoading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextData>({
   user: null,
   signIn: () => Promise.resolve(null),
   signOut: () => {},
+  isLoading: false,
 });
 
 const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+
+  const { mutateAsync, isLoading } = useLogin();
 
   useEffect(() => {
     api.interceptors.request.use(
@@ -66,23 +71,17 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   const signIn = useCallback(
-    async ({ username, password }: SignInCredentials) => {
+    async ({ email, password }: LoginCredentials) => {
       const formData = new FormData();
 
-      formData.append('username', username);
+      formData.append('email', email);
       formData.append('password', password);
 
       const value = Object.fromEntries(formData.entries());
 
-      const { data } = await api.post<User & { access_token: string }>(
-        '/login',
-        value,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      );
+      const data = await mutateAsync(value);
+
+      console.log(data);
 
       const { access_token: token, ...returnedUser } = data;
 
@@ -93,7 +92,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
       return returnedUser;
     },
-    [],
+    [mutateAsync],
   );
 
   const signOut = () => {
@@ -101,7 +100,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, signIn, signOut, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
