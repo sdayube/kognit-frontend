@@ -5,6 +5,7 @@ import api from '../services/api';
 import { useLogin } from '../services/login';
 
 export type User = {
+  id: number;
   email: string;
 };
 
@@ -81,8 +82,6 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
       const data = await mutateAsync(value);
 
-      console.log(data);
-
       const { access_token: token, ...returnedUser } = data;
 
       setUser(returnedUser);
@@ -96,6 +95,8 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   );
 
   const signOut = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     setUser(null);
   };
 

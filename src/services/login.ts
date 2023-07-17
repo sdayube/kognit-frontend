@@ -2,9 +2,7 @@ import { useMutation } from 'react-query';
 import { User } from '../stores/AuthContext';
 import api from './api';
 
-export const login = async (credentials: {
-  [k: string]: FormDataEntryValue;
-}) => {
+const login = async (credentials: { [k: string]: FormDataEntryValue }) => {
   const { data } = await api.post<User & { access_token: string }>(
     '/login',
     credentials,

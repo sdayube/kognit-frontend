@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import RequireAuth from '../components/RequireAuth';
 import Login from '../pages/Login';
+import Layout from '../components/Layout';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -13,8 +14,7 @@ export const router = createBrowserRouter(
         path="/"
         element={
           <RequireAuth>
-            {/* <Layout /> */}
-            <></>
+            <Layout />
           </RequireAuth>
         }
       >

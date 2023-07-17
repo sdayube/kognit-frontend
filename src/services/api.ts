@@ -24,9 +24,10 @@ mock.onPost('/login').reply((config) => {
   const queryString = config.data;
   const { email } = queryToObject<LoginCredentials>(queryString);
 
+  const id = 1;
   const access_token = 'token';
 
-  return [200, { access_token, user: { email } }];
+  return [200, { id, email, access_token }];
 });
 
 export default api;

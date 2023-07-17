@@ -10,8 +10,6 @@ export default function RequireAuth({
 }) {
   const { user } = useAuth();
 
-  console.log(user);
-
   const location = useLocation();
 
   if (!user && !disabled) {
